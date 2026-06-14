@@ -1,0 +1,20 @@
+services:
+  headroom:
+    image: ghcr.io/chopratejas/headroom:latest
+    command: ["--host", "0.0.0.0", "--port", "8787"]
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    volumes:
+        - ./data/headroom:/home/nonroot/.headroom
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./www:/usr/share/nginx/html:ro
+      - ./etc/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - headroom

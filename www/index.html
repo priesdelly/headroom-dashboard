@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Headroom Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>head<span>room</span></h1>
+  <div class="pills" id="status"></div>
+  <div class="spacer"></div>
+  <div class="controls">
+    <button id="refresh" class="btn" title="Refresh now">↻</button>
+    <select id="interval" class="btn" title="Auto-refresh">
+      <option value="3000">3s</option>
+      <option value="5000">5s</option>
+      <option value="10000">10s</option>
+      <option value="0">Manual</option>
+    </select>
+    <button id="theme" class="btn" title="Toggle theme">◐</button>
+  </div>
+  <div class="updated" id="updated">loading…</div>
+</header>
+<main>
+  <div class="grid" id="hero"></div>
+  <div class="grid-2">
+    <div class="card">
+      <h2>Tokens</h2>
+      <div id="tokens"></div>
+    </div>
+    <div class="card">
+      <h2>Current Session</h2>
+      <div id="session"></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h2>Requests</h2>
+      <div id="requests"></div>
+    </div>
+    <div class="card">
+      <h2>Latency</h2>
+      <div id="latency"></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h2>By Provider</h2>
+      <div id="byprovider"></div>
+    </div>
+    <div class="card">
+      <h2>By Model</h2>
+      <div id="bymodel"></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2>Tokens Saved · Daily</h2>
+      <div id="chart"></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h2>CCR Cache</h2>
+      <div id="ccr"></div>
+    </div>
+    <div class="card">
+      <h2>Lifetime</h2>
+      <div id="lifetime"></div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
