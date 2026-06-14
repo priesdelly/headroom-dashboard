@@ -26,7 +26,6 @@ function renderStatus(h) {
   const flag = (label, on) => `<span class="pill"><span class="dot ${on ? 'ok' : 'off'}"></span>${label}</span>`;
   el('status', `
     <span class="pill"><span class="dot ${healthy ? 'ok' : 'bad'}"></span><b>${esc(h.status || '—')}</b></span>
-    <span class="pill">backend <b>${esc(c.backend || '—')}</b></span>
     ${flag('optimize', c.optimize)}
     ${flag('cache', c.cache)}
     <span class="pill">up <b>${uptime(h.uptime_seconds)}</b></span>
