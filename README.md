@@ -1,6 +1,6 @@
-# docker-ai-headroom
+# headroom-dashboard
 
-[Headroom](https://github.com/chopratejas/headroom) proxy + a small dashboard, run with Docker Compose.
+A simple dashboard for the [Headroom](https://github.com/chopratejas/headroom) proxy, bundled with the proxy itself via Docker Compose.
 
 Headroom sits between your AI agent and the upstream LLM, compressing context to cut token usage while preserving answers.
 
