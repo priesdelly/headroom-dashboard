@@ -127,6 +127,42 @@ function renderLifetime(s) {
   }));
 }
 
+function renderRecent(hist) {
+  const h = hist?.history || [];
+  const deltas = h.map((c, i) => {
+    const p = h[i - 1];
+    return {
+      t: c.timestamp,
+      inp: Math.max((+c.total_input_tokens || 0) - (p ? +p.total_input_tokens || 0 : 0), 0),
+      sav: Math.max((+c.total_tokens_saved || 0) - (p ? +p.total_tokens_saved || 0 : 0), 0),
+    };
+  });
+  const last = Date.parse(deltas.at(-1)?.t) || 0;
+  const data = deltas.filter(d => last - (Date.parse(d.t) || 0) <= 3600e3 && d.inp + d.sav > 0);
+  if (!data.length) { el('chart-recent', '<div class="empty">no activity in the last hour</div>'); return; }
+  const W = 1000, H = 160, pad = 4;
+  const max = Math.max(...data.map(d => d.inp + d.sav), 1);
+  const bw = W / data.length;
+  const bars = data.map((d, i) => {
+    const tot = d.inp + d.sav;
+    const hTot = (tot / max) * (H - pad), hSav = (d.sav / max) * (H - pad), hInp = hTot - hSav;
+    const x = i * bw, w = Math.max(bw - 3, 1);
+    const time = (d.t || '').slice(11, 16);
+    const p = tot ? (d.sav / tot * 100).toFixed(1) : '0';
+    return `<g><title>${time} · sent ${n(d.inp)} · saved ${n(d.sav)} (${p}%)</title>` +
+      `<rect x="${x + 1.5}" y="${H - hInp}" width="${w}" height="${hInp}" fill="var(--amber)"/>` +
+      `<rect x="${x + 1.5}" y="${H - hTot}" width="${w}" height="${hSav}" fill="var(--green)"/></g>`;
+  }).join('');
+  el('chart-recent', `<svg viewBox="0 0 ${W} ${H + 16}" preserveAspectRatio="none">${bars}
+    <text x="0" y="${H + 12}" fill="var(--muted)" font-size="11">${data[0].t?.slice(11, 16) || ''}</text>
+    <text x="${W}" y="${H + 12}" fill="var(--muted)" font-size="11" text-anchor="end">peak ${compact(max)}</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--amber)"></i>sent (input)</span>
+    <span><i style="background:var(--green)"></i>saved</span>
+  </div>`);
+}
+
 function renderChart(hist) {
   const data = (hist?.series?.daily || []).map(d => ({ t: d.timestamp, v: +d.tokens_saved || 0 }));
   if (data.length < 1) { el('chart', '<div class="empty">no history yet — run some traffic through the proxy</div>'); return; }
@@ -162,6 +198,7 @@ async function load() {
     renderTable('bymodel', stats.requests?.by_model, 'model');
     renderCcr(stats); renderLifetime(stats);
   }
+  renderRecent(hist);
   renderChart(hist);
   el('updated', (stats ? 'updated ' : '⚠ stale · ') + new Date().toLocaleTimeString());
 }
