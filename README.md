@@ -4,6 +4,11 @@
 
 Headroom sits between your AI agent and the upstream LLM, compressing context to cut token usage while preserving answers.
 
+<img src="docs/dashboard.png" alt="Dashboard" width="640">
+
+> The dashboard is a vibecoded idea — just a quick visual on top of Headroom's
+> `/stats` endpoints, not an official part of the project.
+
 ## Run
 
 ```bash
@@ -48,3 +53,7 @@ Metrics stay at zero until traffic flows through the proxy.
 
 Token-savings stats are written to `./data/headroom` (mounted to `~/.headroom`
 in the container). Delete it to reset the stats.
+
+## License
+
+[MIT](LICENSE) © 2026 Priesdelly
