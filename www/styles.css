@@ -35,7 +35,7 @@ h1 span { color: var(--accent); }
 .updated { font-size: 12px; color: var(--muted); min-width: 130px; text-align: right; }
 main { padding: 24px; max-width: 1200px; margin: 0 auto; }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(4, 1fr); }
-.grid-2 { grid-template-columns: repeat(2, 1fr); margin-top: 16px; }
+.grid-2 { display: grid; gap: 16px; grid-template-columns: repeat(2, 1fr); margin-top: 16px; }
 .card {
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 10px; padding: 16px 18px;
