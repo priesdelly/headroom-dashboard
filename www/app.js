@@ -16,6 +16,7 @@ const uptime = s => {
   return `${s}s`;
 };
 const el = (id, html) => { document.getElementById(id).innerHTML = html; };
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const rows = obj => Object.entries(obj).map(([k, v]) => `<div class="row"><span>${k}</span><span>${v}</span></div>`).join('');
 
 function renderStatus(h) {
@@ -24,12 +25,12 @@ function renderStatus(h) {
   const healthy = h.status === 'healthy';
   const flag = (label, on) => `<span class="pill"><span class="dot ${on ? 'ok' : 'off'}"></span>${label}</span>`;
   el('status', `
-    <span class="pill"><span class="dot ${healthy ? 'ok' : 'bad'}"></span><b>${h.status || '—'}</b></span>
-    <span class="pill">backend <b>${c.backend || '—'}</b></span>
+    <span class="pill"><span class="dot ${healthy ? 'ok' : 'bad'}"></span><b>${esc(h.status || '—')}</b></span>
+    <span class="pill">backend <b>${esc(c.backend || '—')}</b></span>
     ${flag('optimize', c.optimize)}
     ${flag('cache', c.cache)}
     <span class="pill">up <b>${uptime(h.uptime_seconds)}</b></span>
-    <span class="pill">v${h.version || '—'}</span>
+    <span class="pill">v${esc(h.version || '—')}</span>
   `);
 }
 
@@ -102,7 +103,7 @@ function renderTable(id, obj, col) {
   const entries = Object.entries(obj || {});
   if (!entries.length) { el(id, '<div class="empty">no data yet</div>'); return; }
   el(id, `<table><thead><tr><th>${col}</th><th class="r">requests</th></tr></thead><tbody>${
-    entries.map(([k, v]) => `<tr><td>${k}</td><td class="r">${n(typeof v === 'object' ? v.total ?? v.requests ?? 0 : v)}</td></tr>`).join('')
+    entries.map(([k, v]) => `<tr><td>${esc(k)}</td><td class="r">${n(typeof v === 'object' ? v.total ?? v.requests ?? 0 : v)}</td></tr>`).join('')
   }</tbody></table>`);
 }
 
@@ -154,6 +155,7 @@ async function load() {
     get('/health'), get('/stats'), get('/stats-history?series=daily'),
   ]);
   renderStatus(health);
+  document.querySelector('main').classList.toggle('stale', !stats);
   if (stats) {
     renderHero(stats); renderTokens(stats); renderSession(stats);
     renderRequests(stats); renderLatency(stats);
@@ -162,7 +164,7 @@ async function load() {
     renderCcr(stats); renderLifetime(stats);
   }
   renderChart(hist);
-  el('updated', 'updated ' + new Date().toLocaleTimeString());
+  el('updated', (stats ? 'updated ' : '⚠ stale · ') + new Date().toLocaleTimeString());
 }
 
 let timer = null;
